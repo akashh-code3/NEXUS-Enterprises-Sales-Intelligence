@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102a3a">
+  <title>NEXUS | Enterprise Sales Intelligence</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+    :root{--ink:#172e3d;--muted:#758794;--teal:#00a58a;--blue:#477dc5;--line:#e6edf0;--paper:#f4f7f8;--white:#fff}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink)}
+    .shell{min-height:100vh;display:grid;grid-template-columns:244px 1fr}
+    aside{background:#102a3a;color:#dce7eb;padding:28px 18px;display:flex;flex-direction:column}
+    .brand{display:flex;gap:12px;align-items:center;padding:0 10px 32px}
+    .brand-mark{width:37px;height:37px;border-radius:11px;background:linear-gradient(145deg,#00b79a,#087664);display:grid;place-items:center;color:#fff;font:800 17px Manrope}
+    .brand-title{font:800 13px Manrope;letter-spacing:.01em}.brand-sub{font-size:9px;color:#8da6b1;letter-spacing:.13em;margin-top:3px}
+    .nav-label{font-size:9px;letter-spacing:.17em;color:#78909a;font-weight:700;padding:12px 12px}
+    nav a{height:42px;display:flex;align-items:center;gap:12px;text-decoration:none;color:#a8bac2;font-size:12px;padding:0 12px;border-radius:9px;margin:3px 0}
+    nav a.active{background:#1b3d4d;color:#fff}.nav-icon{width:17px;text-align:center;font-size:14px}
+    .side-bottom{margin-top:auto;border-top:1px solid #244150;padding:18px 10px 0;font-size:10px;color:#8da3ad;line-height:1.6}
+    .status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#32c7a6;margin-right:6px}
+    main{padding:30px 38px 24px;max-width:1600px;width:100%;margin:auto}
+    .topline{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}
+    .crumb{color:#8a9aa4;font-size:11px}.crumb b{color:#294354;font-weight:600}
+    .top-actions{display:flex;align-items:center;gap:12px}
+    select,.period{border:1px solid var(--line);border-radius:8px;background:#fff;padding:9px 12px;font:500 11px 'DM Sans';color:#334b59}
+    .avatar{width:33px;height:33px;border-radius:50%;background:#d6e5e8;color:#31515c;display:grid;place-items:center;font-size:11px;font-weight:700}
+    .heading{display:flex;justify-content:space-between;align-items:end;margin-bottom:22px}
+    .eyebrow{font-size:9px;color:var(--teal);font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+    h1{font:800 26px Manrope;letter-spacing:-.045em;margin:5px 0 4px}
+    .subtitle{font-size:11px;color:var(--muted)}
+    .export{background:var(--ink);border:0;border-radius:8px;color:#fff;font:600 10px 'DM Sans';padding:11px 14px;cursor:pointer}
+    .grid-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:15px}
+    .card{background:var(--white);border:1px solid var(--line);border-radius:12px;box-shadow:0 2px 6px #18394a05}
+    .kpi{padding:17px 18px;min-height:115px}
+    .kpi-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:10px;font-weight:600}
+    .kpi-symbol{width:25px;height:25px;background:#eff8f6;border-radius:7px;color:var(--teal);display:grid;place-items:center;font-size:12px}
+    .value{font:800 23px Manrope;letter-spacing:-.04em;margin:11px 0 5px}
+    .delta{font-size:9px;color:#7e909a}.positive{color:#0a9b79;font-weight:700}
+    .content-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(270px,.85fr);gap:14px}
+    .panel{padding:17px 18px}
+    .panel-header{display:flex;justify-content:space-between;align-items:start}
+    .panel-title{font:700 12px Manrope}
+    .panel-note{font-size:9px;color:#8b9aa3;margin-top:4px}
+    .legend{display:flex;gap:13px;font-size:9px;color:#748691}
+    .legend i{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px}
+    .chart{height:221px;margin-top:14px;position:relative}
+    .chart svg{width:100%;height:100%;overflow:visible}
+    .axis-label{fill:#8998a1;font:9px 'DM Sans'}
+    .grid-line{stroke:#edf1f3;stroke-width:1}
+    .revenue-line{fill:none;stroke:#00a58a;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+    .profit-line{fill:none;stroke:#477dc5;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .area{fill:url(#areaFill)}
+    .side-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:17px}
+    .mini{padding:12px;background:#f7f9fa;border-radius:9px}
+    .mini-label{font-size:9px;color:var(--muted)}.mini-value{font:700 15px Manrope;margin-top:5px}
+    .bars{margin-top:19px;display:grid;gap:16px}
+    .bar-head{display:flex;justify-content:space-between;font-size:9px;margin-bottom:7px}
+    .bar-head span:last-child{font-weight:700}
+    .bar-track{height:6px;border-radius:6px;background:#eef2f3;overflow:hidden}
+    .bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#00a58a,#54c7af)}
+    .bottom-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:14px;margin-top:14px}
+    .table{width:100%;border-collapse:collapse;margin-top:14px;font-size:9px}
+    .table th{text-align:left;color:#8998a1;font-weight:500;padding:8px 3px;border-bottom:1px solid var(--line)}
+    .table td{padding:9px 3px;border-bottom:1px solid #f0f3f4}
+    .table td:last-child,.table th:last-child{text-align:right}
+    .product{font-weight:600;color:#2a4352}.pill{padding:3px 6px;border-radius:5px;background:#edf7f5;color:#328574;font-size:8px}
+    .donut-wrap{display:flex;align-items:center;justify-content:center;gap:18px;margin:20px auto 8px}
+    .donut{width:115px;height:115px;border-radius:50%;background:conic-gradient(#00a58a 0 61%,#477dc5 61% 83%,#edaa35 83% 94%,#dfe7ea 94% 100%);display:grid;place-items:center;position:relative}
+    .donut:before{content:"";position:absolute;width:77px;height:77px;background:#fff;border-radius:50%}
+    .donut-label{z-index:1;text-align:center;font:800 16px Manrope}.donut-label small{display:block;font:9px 'DM Sans';color:#84939c}
+    .legend-list{display:grid;gap:10px;font-size:9px;color:#687b86}.legend-list i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px}
+    .insight{margin-top:14px;background:#edf8f5;border:1px solid #d5eee7;border-radius:10px;padding:13px 15px;display:flex;gap:11px;align-items:start}
+    .insight-icon{color:#048b74;font-size:15px}.insight strong{font-size:10px;display:block;margin-bottom:4px}.insight p{font-size:9px;color:#56746f;margin:0;line-height:1.5}
+    footer{border-top:1px solid var(--line);margin-top:20px;padding-top:13px;display:flex;justify-content:space-between;color:#91a0a8;font-size:8px}
+    .nav-button{width:100%;height:42px;display:flex;align-items:center;gap:12px;text-align:left;background:transparent;border:0;text-decoration:none;color:#a8bac2;font:500 12px 'DM Sans';padding:0 12px;border-radius:9px;margin:3px 0;cursor:pointer}
+    .nav-button:hover,.nav-button.active{background:#1b3d4d;color:#fff}
+    .nav-button .nav-icon{width:17px;text-align:center;font-size:14px}
+    .filter-box{margin:0 10px 12px}.filter-box label{display:block;color:#9bb0b9;font-size:9px;margin-bottom:6px}
+    .filter-box select{width:100%;padding:8px 9px;background:#173443;color:#e4edf1;border-color:#31505e}
+    .filter-box select[multiple]{height:72px}
+    .filter-box input[type=checkbox]{accent-color:#21b79c}
+    .file-label{display:block;text-align:center;background:#1b3d4d;color:#e4edf1;padding:9px;border-radius:8px;font-size:10px;cursor:pointer}
+    .file-label:hover{background:#245064}.file-label input{display:none}
+    .data-status{font-size:9px;color:#91a9b2;line-height:1.45;margin:7px 0 0}
+    .workspace-view{margin-top:16px}.workspace-view[hidden],.overview-section[hidden]{display:none}
+    .view-card{padding:18px;margin-bottom:14px}.view-heading{font:700 13px Manrope;margin-bottom:5px}
+    .view-note{color:var(--muted);font-size:10px;margin-bottom:14px}
+    .view-table{width:100%;border-collapse:collapse;font-size:10px}.view-table th,.view-table td{text-align:left;padding:9px;border-bottom:1px solid var(--line)}
+    .view-table th{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.06em}
+    .view-table td.numeric,.view-table th.numeric{text-align:right}
+    .view-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .view-metric{background:#f7f9fa;padding:14px;border-radius:9px}.view-metric span{display:block;color:var(--muted);font-size:9px}.view-metric strong{display:block;font:700 17px Manrope;margin-top:6px}
+    .view-bar{height:8px;background:#edf1f3;border-radius:8px;overflow:hidden;margin-top:7px}.view-bar i{display:block;height:100%;background:#008b76;border-radius:8px}
+    body[data-theme=dark]{--ink:#e7edf0;--muted:#a0afb7;--line:#30434d;--paper:#14232c;--white:#1b2b35}
+    body[data-theme=dark] .card{background:#1b2b35;box-shadow:none}
+    body[data-theme=dark] .mini,body[data-theme=dark] .view-metric{background:#20333e}
+    body[data-theme=dark] .table td,body[data-theme=dark] .table th{border-color:#30434d}
+    body[data-theme=dark] .donut:before{background:#1b2b35}
+    body[data-theme=dark] .insight{background:#17342f;border-color:#275247;color:#c8e5dc}
+    body[data-theme=dark] select{background:#20333e;color:#e7edf0;border-color:#40535d}
+    body[data-theme=dark] .axis-label{fill:#a0afb7}
+    .toolbar-button{border:1px solid var(--line);border-radius:8px;background:#fff;padding:9px 11px;font:600 10px 'DM Sans';color:#334b59;cursor:pointer}
+    .toolbar-button:hover{border-color:#90b8ad;color:#007f6d}
+    .empty-state{border:1px dashed #b7c8ce;background:#f8fafb;padding:24px;border-radius:10px;text-align:center;color:#718393;font-size:11px}
+    body[data-theme=dark] .empty-state{background:#1b2b35;color:#a0afb7;border-color:#40535d}
+    @media print{aside,.topline,.export,.filters-print-hide{display:none!important}.shell{display:block}main{max-width:none;padding:0}.card{break-inside:avoid}}
+    @media(max-width:1050px){.shell{grid-template-columns:195px 1fr}main{padding:24px}.bottom-grid{grid-template-columns:1fr 1fr}.bottom-grid .card:last-child{grid-column:span 2}}
+    @media(max-width:760px){.shell{grid-template-columns:1fr}aside{display:flex;padding:16px}.brand{padding-bottom:12px}nav{display:grid;grid-template-columns:1fr 1fr;gap:2px}.nav-label{padding:8px 8px}main{padding:18px 14px}.grid-kpis{grid-template-columns:1fr 1fr}.content-grid,.bottom-grid{grid-template-columns:1fr}.bottom-grid .card:last-child{grid-column:auto}.heading{align-items:start;gap:12px;flex-direction:column}.topline{margin-bottom:20px}.period{max-width:130px}.view-grid{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <aside>
+    <div class="brand"><div class="brand-mark">N</div><div><div class="brand-title">NEXUS</div><div class="brand-sub">ENTERPRISE SALES INTELLIGENCE</div></div></div>
+    <div class="nav-label">WORKSPACE</div>
+    <nav>
+      <button class="nav-button active" type="button" data-view="overview"><span class="nav-icon">◫</span>Executive overview</button>
+      <button class="nav-button" type="button" data-view="revenue"><span class="nav-icon">↗</span>Revenue &amp; growth</button>
+      <button class="nav-button" type="button" data-view="customers"><span class="nav-icon">◇</span>Customer insights</button>
+      <button class="nav-button" type="button" data-view="products"><span class="nav-icon">▦</span>Product performance</button>
+      <button class="nav-button" type="button" data-view="regions"><span class="nav-icon">⌖</span>Regional analysis</button>
+    </nav>
+    <div class="nav-label" style="margin-top:21px">MANAGE</div>
+    <nav><button class="nav-button" type="button" data-view="quality"><span class="nav-icon">⚙</span>Data quality</button><button class="nav-button" type="button" data-view="exports"><span class="nav-icon">⇩</span>Exports &amp; reports</button></nav>
+    <div class="filter-box"><label for="region-filter">REGION</label><select id="region-filter" multiple disabled></select></div>
+    <div class="filter-box"><label for="category-filter">CATEGORY</label><select id="category-filter" multiple disabled></select></div>
+    <div class="filter-box"><label><input id="include-reversed" type="checkbox" disabled> Include cancelled &amp; returned</label></div>
+    <div class="filter-box"><label class="file-label">Import cleaned sales CSV<input type="file" id="csv-file" accept=".csv,text/csv"></label><p class="data-status" id="data-status">Illustrative preview · Import a cleaned CSV to activate live filters and analytics.</p></div>
+    <div class="side-bottom"><span class="status-dot"></span><span id="pipeline-status">Preview mode</span><br><span id="refresh-label">Import a CSV for live analytics</span></div>
+  </aside>
+  <main>
+    <div class="topline">
+      <div class="crumb">Analytics <span style="padding:0 7px">/</span> <b id="crumb-current">Executive overview</b></div>
+      <div class="top-actions"><select aria-label="Period" id="period" disabled><option value="all">All periods</option></select><select aria-label="Appearance" id="theme"><option value="light">Light</option><option value="dark">Dark</option></select><div class="avatar" aria-label="User profile">NX</div></div>
+    </div>
+    <div class="heading">
+      <div><div class="eyebrow" id="page-eyebrow">NEXUS · leadership briefing</div><h1 id="page-title">Sales, with context.</h1><div class="subtitle" id="page-subtitle">A decision-ready view of commercial performance and the signals behind it.</div></div>
+      <button class="export" id="export-button" type="button">↗ &nbsp;Export overview</button>
+    </div>
+    <section class="grid-kpis overview-section" id="kpi-section">
+      <div class="card kpi"><div class="kpi-top"><span>NET REVENUE</span><span class="kpi-symbol">$</span></div><div class="value" id="revenue">$4.28M</div><div class="delta"><span class="positive">↑ 12.8%</span> vs. prior year</div></div>
+      <div class="card kpi"><div class="kpi-top"><span>GROSS PROFIT</span><span class="kpi-symbol">↗</span></div><div class="value" id="profit">$1.31M</div><div class="delta"><span class="positive">↑ 9.4%</span> · 30.6% margin</div></div>
+      <div class="card kpi"><div class="kpi-top"><span>ORDERS</span><span class="kpi-symbol">▤</span></div><div class="value" id="orders">28,640</div><div class="delta"><span class="positive">↑ 6.2%</span> · 97.8% completed</div></div>
+      <div class="card kpi"><div class="kpi-top"><span>AVERAGE ORDER VALUE</span><span class="kpi-symbol">◎</span></div><div class="value" id="aov">$149</div><div class="delta"><span class="positive">↑ 4.1%</span> vs. prior year</div></div>
+    </section>
+    <section class="content-grid overview-section" id="charts-section">
+      <div class="card panel">
+        <div class="panel-header"><div><div class="panel-title">Revenue trajectory</div><div class="panel-note">Monthly revenue and profit · USD</div></div><div class="legend"><span><i style="background:#00a58a"></i>Revenue</span><span><i style="background:#477dc5"></i>Profit</span></div></div>
+        <div class="chart">
+          <svg viewBox="0 0 700 230" role="img" aria-label="Monthly revenue and profit trend">
+            <defs><linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#00a58a" stop-opacity=".16"/><stop offset="1" stop-color="#00a58a" stop-opacity="0"/></linearGradient></defs>
+            <line class="grid-line" x1="45" y1="30" x2="690" y2="30"/><line class="grid-line" x1="45" y1="78" x2="690" y2="78"/><line class="grid-line" x1="45" y1="126" x2="690" y2="126"/><line class="grid-line" x1="45" y1="174" x2="690" y2="174"/>
+            <text class="axis-label" x="0" y="33">$500k</text><text class="axis-label" x="0" y="81">$350k</text><text class="axis-label" x="0" y="129">$200k</text><text class="axis-label" x="0" y="177">$50k</text>
+            <path class="area" d="M50 135 L105 123 L160 128 L215 102 L270 110 L325 88 L380 96 L435 68 L490 75 L545 53 L600 64 L660 31 L660 190 L50 190 Z"/>
+            <path class="revenue-line" d="M50 135 L105 123 L160 128 L215 102 L270 110 L325 88 L380 96 L435 68 L490 75 L545 53 L600 64 L660 31"/>
+            <path class="profit-line" d="M50 164 L105 158 L160 161 L215 148 L270 151 L325 140 L380 144 L435 129 L490 132 L545 121 L600 125 L660 108"/>
+            <g class="axis-label" text-anchor="middle"><text x="50" y="212">Jan</text><text x="105" y="212">Feb</text><text x="160" y="212">Mar</text><text x="215" y="212">Apr</text><text x="270" y="212">May</text><text x="325" y="212">Jun</text><text x="380" y="212">Jul</text><text x="435" y="212">Aug</text><text x="490" y="212">Sep</text><text x="545" y="212">Oct</text><text x="600" y="212">Nov</text><text x="660" y="212">Dec</text></g>
+          </svg>
+        </div>
+      </div>
+      <div class="card panel">
+        <div class="panel-header"><div><div class="panel-title">Performance pulse</div><div class="panel-note">Current period at a glance</div></div><span class="pill">On track</span></div>
+        <div class="side-stats">
+          <div class="mini"><div class="mini-label">UNITS SOLD</div><div class="mini-value">94,280</div></div>
+          <div class="mini"><div class="mini-label">ACTIVE CUSTOMERS</div><div class="mini-value">18,406</div></div>
+          <div class="mini"><div class="mini-label">REPEAT RATE</div><div class="mini-value">38.4%</div></div>
+          <div class="mini"><div class="mini-label">AVG. SHIP TIME</div><div class="mini-value">3.2 days</div></div>
+        </div>
+        <div class="panel-title" style="margin-top:22px">Revenue by category</div>
+        <div class="bars">
+          <div><div class="bar-head"><span>Electronics</span><span>$1.48M</span></div><div class="bar-track"><div class="bar-fill" style="width:92%"></div></div></div>
+          <div><div class="bar-head"><span>Home &amp; Living</span><span>$1.12M</span></div><div class="bar-track"><div class="bar-fill" style="width:72%;background:linear-gradient(90deg,#477dc5,#83a6d8)"></div></div></div>
+          <div><div class="bar-head"><span>Apparel</span><span>$824K</span></div><div class="bar-track"><div class="bar-fill" style="width:55%;background:linear-gradient(90deg,#edaa35,#f1c979)"></div></div></div>
+          <div><div class="bar-head"><span>Sports &amp; Outdoors</span><span>$536K</span></div><div class="bar-track"><div class="bar-fill" style="width:39%;background:linear-gradient(90deg,#e57966,#efa296)"></div></div></div>
+        </div>
+      </div>
+    </section>
+    <section class="bottom-grid overview-section" id="detail-section">
+      <div class="card panel">
+        <div class="panel-title">Products to watch</div><div class="panel-note">Top contributors by net revenue</div>
+        <table class="table"><thead><tr><th>PRODUCT</th><th>CATEGORY</th><th>REVENUE</th></tr></thead><tbody>
+          <tr><td class="product">Laptop Pro 14</td><td>Electronics</td><td>$284,610</td></tr>
+          <tr><td class="product">Ergonomic Chair</td><td>Home &amp; Living</td><td>$198,420</td></tr>
+          <tr><td class="product">Wireless Headphones</td><td>Electronics</td><td>$172,840</td></tr>
+          <tr><td class="product">Performance Jacket</td><td>Apparel</td><td>$146,290</td></tr>
+        </tbody></table>
+      </div>
+      <div class="card panel">
+        <div class="panel-title">Order health</div><div class="panel-note">Operational mix by transaction status</div>
+        <div class="donut-wrap"><div class="donut"><div class="donut-label">97.8%<small>fulfilled</small></div></div><div class="legend-list"><div><i style="background:#00a58a"></i>Delivered&nbsp; 82.4%</div><div><i style="background:#477dc5"></i>Shipped&nbsp; 9.8%</div><div><i style="background:#edaa35"></i>Processing&nbsp; 5.6%</div><div><i style="background:#dfe7ea"></i>Other&nbsp; 2.2%</div></div></div>
+      </div>
+      <div class="card panel">
+        <div class="panel-title">Regional mix</div><div class="panel-note">Share of realized revenue</div>
+        <div class="bars" style="margin-top:21px">
+          <div><div class="bar-head"><span>South</span><span>29%</span></div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div></div>
+          <div><div class="bar-head"><span>West</span><span>25%</span></div><div class="bar-track"><div class="bar-fill" style="width:86%;background:linear-gradient(90deg,#477dc5,#83a6d8)"></div></div></div>
+          <div><div class="bar-head"><span>Northeast</span><span>24%</span></div><div class="bar-track"><div class="bar-fill" style="width:83%;background:linear-gradient(90deg,#edaa35,#f1c979)"></div></div></div>
+          <div><div class="bar-head"><span>Midwest</span><span>22%</span></div><div class="bar-track"><div class="bar-fill" style="width:76%;background:linear-gradient(90deg,#e57966,#efa296)"></div></div></div>
+        </div>
+      </div>
+    </section>
+    <div class="insight overview-section" id="management-readout"><div class="insight-icon">✦</div><div><strong>Management readout</strong><p id="management-text">Illustrative preview metrics. Import the cleaned sales CSV to calculate recommendations from actual selected data.</p></div></div>
+    <section class="workspace-view" id="workspace-view" hidden></section>
+    <footer><span>NEXUS · ENTERPRISE SALES INTELLIGENCE &amp; STRATEGIC ANALYTICS</span><span id="footer-status">Illustrative dashboard preview · Import data for live analysis</span></footer>
+  </main>
+</div>
+<script>
+  const requiredColumns = ['Order_ID', 'Order_Date', 'Customer_ID', 'Customer_Name', 'Category', 'Region', 'Quantity', 'Revenue', 'Profit', 'Order_Status'];
+  const state = { headers: [], rows: [], fileName: '', view: 'overview', quality: null };
+  const byId = (id) => document.getElementById(id);
+  const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  const number = (value) => {
+    const parsed = Number(String(value ?? '').replace(/[$,%\s]/g, ''));
+    return Number.isFinite(parsed) ? parsed : 0;
+  };
+  const money = (value) => {
+    const amount = Number(value) || 0;
+    if (Math.abs(amount) >= 1e6) return `$${(amount / 1e6).toFixed(2)}M`;
+    if (Math.abs(amount) >= 1e3) return `$${(amount / 1e3).toFixed(1)}K`;
+    return `$${amount.toLocaleString('en-US', {maximumFractionDigits: 0})}`;
+  };
+  const moneyFull = (value) => `$${(Number(value) || 0).toLocaleString('en-US', {maximumFractionDigits: 0})}`;
+  const ratio = (value) => `${((Number(value) || 0) * 100).toFixed(1)}%`;
+
+  function* parseCSV(text) {
+    let row = [];
+    let field = '';
+    let quoted = false;
+    let rowStart = 0;
+    for (let index = 0; index < text.length; index += 1) {
+      const char = text[index];
+      if (quoted) {
+        if (char === '"' && text[index + 1] === '"') {
+          field += '"';
+          index += 1;
+        } else if (char === '"') {
+          quoted = false;
+        } else {
+          field += char;
+        }
+      } else if (char === '"' && field.length === 0) {
+        quoted = true;
+      } else if (char === ',') {
+        row.push(field);
+        field = '';
+      } else if (char === '\n' || char === '\r') {
+        row.push(field);
+        field = '';
+        if (row.some((cell) => cell.length > 0)) {
+          const end = char === '\r' ? index : index;
+          yield {cells: row, rawLine: text.slice(rowStart, end)};
+        }
+        row = [];
+        if (char === '\r' && text[index + 1] === '\n') index += 1;
+        rowStart = index + 1;
+      } else {
+        field += char;
+      }
+    }
+    if (field.length || row.length) {
+      row.push(field);
+      if (row.some((cell) => cell.length > 0)) yield {cells: row, rawLine: text.slice(rowStart)};
+    }
+    if (quoted) throw new Error('The selected CSV contains an unclosed quoted field.');
+  }
+
+  function formatCSVCell(value) {
+    const text = String(value ?? '');
+    return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+  }
+
+  function parseDate(value) {
+    const match = /^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(String(value ?? ''));
+    if (match) return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  }
+
+  function setStatus(message, healthy) {
+    byId('data-status').textContent = message;
+    byId('pipeline-status').textContent = healthy ? 'Data pipeline ready' : 'Preview mode';
+    byId('refresh-label').textContent = healthy ? `Loaded · ${new Date().toLocaleString()}` : 'Import a CSV for live analytics';
+    document.querySelector('.status-dot').style.background = healthy ? '#32c7a6' : '#c78a27';
+  }
+
+  function selectedValues(select) {
+    return Array.from(select.selectedOptions).map((option) => option.value);
+  }
+
+  function currentRows() {
+    if (!state.rows.length) return [];
+    const year = byId('period').value;
+    const regions = selectedValues(byId('region-filter'));
+    const categories = selectedValues(byId('category-filter'));
+    const includeReversed = byId('include-reversed').checked;
+    if (!regions.length || !categories.length) return [];
+    return state.rows.filter((row) => {
+      const rowYear = String(row.date.getFullYear());
+      return (year === 'all' || rowYear === year)
+        && (!regions.length || regions.includes(row.region))
+        && (!categories.length || categories.includes(row.category))
+        && (includeReversed || !['Cancelled', 'Returned'].includes(row.status));
+    });
+  }
+
+  function groupBy(rows, key, valueKey) {
+    const result = new Map();
+    rows.forEach((row) => {
+      const name = row[key] || 'Unknown';
+      result.set(name, (result.get(name) || 0) + (valueKey ? row[valueKey] : 1));
+    });
+    return result;
+  }
+
+  function monthlyGroups(rows) {
+    const result = new Map();
+    rows.forEach((row) => {
+      if (['Cancelled', 'Returned'].includes(row.status)) return;
+      const key = `${row.date.getFullYear()}-${String(row.date.getMonth() + 1).padStart(2, '0')}`;
+      const item = result.get(key) || {revenue: 0, profit: 0};
+      item.revenue += row.revenue;
+      item.profit += row.profit;
+      result.set(key, item);
+    });
+    return Array.from(result.entries()).sort(([a], [b]) => a.localeCompare(b)).map(([month, values]) => ({month, ...values}));
+  }
+
+  function uniqueCustomers(rows) {
+    return new Set(rows.filter((row) => !['Cancelled', 'Returned'].includes(row.status)).map((row) => row.customerId)).size;
+  }
+
+  function updateFilters() {
+    const years = [...new Set(state.rows.map((row) => row.date.getFullYear()))].sort((a, b) => b - a);
+    byId('period').innerHTML = '<option value="all">All periods</option>' + years.map((year) => `<option value="${year}">FY ${year}</option>`).join('');
+    byId('period').disabled = false;
+    byId('period').value = years.length ? String(years[0]) : 'all';
+    const regions = [...new Set(state.rows.map((row) => row.region).filter(Boolean))].sort();
+    const categories = [...new Set(state.rows.map((row) => row.category).filter(Boolean))].sort();
+    [['region-filter', regions], ['category-filter', categories]].forEach(([id, values]) => {
+      const select = byId(id);
+      select.innerHTML = values.map((value) => `<option value="${escapeHtml(value)}" selected>${escapeHtml(value)}</option>`).join('');
+      select.disabled = false;
+    });
+    byId('include-reversed').disabled = false;
+    byId('kpi-section').querySelectorAll('.delta').forEach((element) => { element.textContent = 'Based on current filters'; });
+  }
+
+  function setMetric(id, value) { byId(id).textContent = value; }
+
+  function linePath(values, key, maxValue) {
+    if (!values.length) return '';
+    const left = 50;
+    const right = 660;
+    const top = 30;
+    const bottom = 178;
+    return values.map((item, index) => {
+      const x = values.length === 1 ? (left + right) / 2 : left + (right - left) * index / (values.length - 1);
+      const y = bottom - (Math.max(0, item[key]) / (maxValue || 1)) * (bottom - top);
+      return `${index ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`;
+    }).join(' ');
+  }
+
+  function updateTrend(monthly) {
+    const revenuePath = linePath(monthly, 'revenue', Math.max(1, ...monthly.map((month) => month.revenue)));
+    const maxValue = Math.max(1, ...monthly.map((month) => month.revenue));
+    const profitPath = linePath(monthly, 'profit', maxValue);
+    document.querySelector('.revenue-line').setAttribute('d', revenuePath);
+    document.querySelector('.profit-line').setAttribute('d', profitPath);
+    document.querySelector('.area').setAttribute('d', monthly.length ? `${revenuePath} L660 190 L50 190 Z` : '');
+    const labels = document.querySelector('.chart svg g.axis-label');
+    labels.innerHTML = monthly.map((month, index) => {
+      const x = monthly.length === 1 ? 355 : 50 + 610 * index / (monthly.length - 1);
+      const label = new Date(`${month.month}-01T00:00:00`).toLocaleDateString('en-US', {month: 'short'});
+      return `<text x="${x.toFixed(1)}" y="212">${label}</text>`;
+    }).join('');
+    document.querySelectorAll('.chart svg .axis-label:not(g)').forEach((label, index) => {
+      const fractions = [1, 0.7, 0.4, 0.1];
+      label.textContent = money(maxValue * fractions[index]);
+    });
+    document.querySelector('.panel-note').textContent = monthly.length ? `${monthly[0].month} — ${monthly[monthly.length - 1].month} · USD` : 'No realized sales for this selection';
+  }
+
+  function setBars(container, map, total) {
+    const entries = Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
+    container.innerHTML = entries.slice(0, 6).map(([label, amount], index) => {
+      const width = total ? Math.max(2, amount / Math.max(...entries.map((entry) => entry[1])) * 100) : 0;
+      const colors = ['#008b76', '#477dc5', '#c78a27', '#c86b5b', '#56a694', '#8198a8'];
+      return `<div><div class="bar-head"><span>${escapeHtml(label)}</span><span>${money(amount)}</span></div><div class="bar-track"><div class="bar-fill" style="width:${width}%;background:${colors[index % colors.length]}"></div></div></div>`;
+    }).join('') || '<div class="data-status">No data in this selection.</div>';
+  }
+
+  function updateOverview(rows) {
+    const eligible = rows.filter((row) => !['Cancelled', 'Returned'].includes(row.status));
+    const revenue = eligible.reduce((total, row) => total + row.revenue, 0);
+    const profit = eligible.reduce((total, row) => total + row.profit, 0);
+    const orders = new Set(eligible.map((row) => row.orderId)).size;
+    const aov = orders ? revenue / orders : 0;
+    const customers = uniqueCustomers(rows);
+    const customerOrders = new Map();
+    eligible.forEach((row) => customerOrders.set(row.customerId, (customerOrders.get(row.customerId) || new Set()).add(row.orderId)));
+    const repeatRate = customerOrders.size ? [...customerOrders.values()].filter((set) => set.size > 1).length / customerOrders.size : 0;
+    const shippingRows = eligible.filter((row) => row.shippingDays > 0);
+    const avgShipping = shippingRows.length ? shippingRows.reduce((total, row) => total + row.shippingDays, 0) / shippingRows.length : 0;
+    setMetric('revenue', money(revenue));
+    setMetric('profit', money(profit));
+    setMetric('orders', orders.toLocaleString('en-US'));
+    setMetric('aov', moneyFull(aov));
+    const miniValues = document.querySelectorAll('.side-stats .mini-value');
+    miniValues[0].textContent = eligible.reduce((total, row) => total + row.quantity, 0).toLocaleString('en-US');
+    miniValues[1].textContent = customers.toLocaleString('en-US');
+    miniValues[2].textContent = ratio(repeatRate);
+    miniValues[3].textContent = `${avgShipping.toFixed(1)} days`;
+
+    const categoryRevenue = groupBy(eligible, 'category', 'revenue');
+    const regionRevenue = groupBy(eligible, 'region', 'revenue');
+    const monthly = monthlyGroups(rows);
+    updateTrend(monthly);
+    setBars(document.querySelector('.content-grid .bars'), categoryRevenue, revenue);
+    const regionContainer = document.querySelectorAll('.bottom-grid .bars')[0];
+    setBars(regionContainer, regionRevenue, revenue);
+    const products = new Map();
+    eligible.forEach((row) => {
+      const product = row.productName || 'Unknown product';
+      const stats = products.get(product) || {revenue: 0, category: row.category};
+      stats.revenue += row.revenue;
+      products.set(product, stats);
+    });
+    const productRows = Array.from(products.entries()).sort((a, b) => b[1].revenue - a[1].revenue).slice(0, 5);
+    document.querySelector('.table tbody').innerHTML = productRows.map(([name, stats]) =>
+      `<tr><td class="product">${escapeHtml(name)}</td><td>${escapeHtml(stats.category)}</td><td>${moneyFull(stats.revenue)}</td></tr>`
+    ).join('') || '<tr><td colspan="3">No product sales in this selection.</td></tr>';
+
+    const statuses = groupBy(rows, 'status');
+    const statusColors = {'Delivered':'#008b76','Shipped':'#477dc5','Processing':'#c78a27','Returned':'#c86b5b','Cancelled':'#dfe7ea'};
+    let offset = 0;
+    const stops = [];
+    const totalStatuses = [...statuses.values()].reduce((sum, value) => sum + value, 0) || 1;
+    const legend = document.querySelector('.legend-list');
+    legend.innerHTML = Array.from(statuses.entries()).sort((a,b) => b[1]-a[1]).map(([status, count]) => {
+      const start = offset;
+      offset += count / totalStatuses * 100;
+      stops.push(`${statusColors[status] || '#9da9b0'} ${start.toFixed(2)}% ${offset.toFixed(2)}%`);
+      return `<div><i style="background:${statusColors[status] || '#9da9b0'}"></i>${escapeHtml(status)}&nbsp; ${ratio(count / totalStatuses)}</div>`;
+    }).join('');
+    document.querySelector('.donut').style.background = `conic-gradient(${stops.join(',')})`;
+    document.querySelector('.donut-label').innerHTML = `${ratio(orders / (orders + (statuses.get('Cancelled') || 0) + (statuses.get('Returned') || 0)))}<small>fulfilled</small>`;
+    const bestCategory = Array.from(categoryRevenue.entries()).sort((a,b) => b[1]-a[1])[0];
+    const margins = new Map();
+    eligible.forEach((row) => {
+      const data = margins.get(row.category) || {revenue:0,profit:0};
+      data.revenue += row.revenue; data.profit += row.profit; margins.set(row.category, data);
+    });
+    const lowestMargin = Array.from(margins.entries()).filter(([,v]) => v.revenue > 0).sort((a,b) => a[1].profit/a[1].revenue-b[1].profit/b[1].revenue)[0];
+    byId('management-text').textContent = bestCategory && lowestMargin
+      ? `${bestCategory[0]} leads realized revenue at ${money(bestCategory[1])}. ${lowestMargin[0]} has the lowest observed category margin (${ratio(lowestMargin[1].profit / lowestMargin[1].revenue)}); review discount depth and unit economics before scaling promotions.`
+      : 'No realized transactions match this selection. Adjust filters to view management signals.';
+    byId('footer-status').textContent = `${rows.length.toLocaleString('en-US')} filtered records · ${state.fileName}`;
+    document.querySelector('.eyebrow').textContent = `NEXUS · live sales overview · ${rows.length.toLocaleString('en-US')} records`;
+  }
+
+  function rfmRows(rows) {
+    const customers = new Map();
+    rows.filter((row) => !['Cancelled','Returned'].includes(row.status)).forEach((row) => {
+      const customer = customers.get(row.customerId) || {id:row.customerId,name:row.customerName,frequency:new Set(),monetary:0,last:row.date};
+      customer.frequency.add(row.orderId); customer.monetary += row.revenue;
+      if (row.date > customer.last) customer.last = row.date;
+      customers.set(row.customerId, customer);
+    });
+    const values = Array.from(customers.values());
+    const metric = (customer, key) => key === 'frequency' ? customer.frequency.size : key === 'recency' ? customer.last.getTime() : customer.monetary;
+    const score = (value, key, reverse) => {
+      const sorted = [...values].sort((a,b) => metric(a,key)-metric(b,key));
+      const rank = sorted.findIndex((entry) => entry === value) / Math.max(sorted.length,1);
+      const result = Math.min(5, Math.floor(rank * 5) + 1);
+      return reverse ? 6 - result : result;
+    };
+    const asOf = values.reduce((latest, customer) => customer.last > latest ? customer.last : latest, new Date(0));
+    return values.map((customer) => {
+      const recency = Math.floor((asOf - customer.last) / 86400000);
+      const R = score(customer, 'recency', false);
+      const F = score(customer, 'frequency', false);
+      const M = score(customer, 'monetary', false);
+      let segment = 'Develop customers';
+      if (R >= 4 && F >= 4 && M >= 4) segment = 'Champions';
+      else if (R >= 3 && F >= 3) segment = 'Loyal customers';
+      else if (R >= 4 && F <= 2) segment = 'Recent customers';
+      else if (R <= 2 && F >= 3) segment = 'At risk';
+      else if (R <= 2 && F <= 2) segment = 'Needs attention';
+      return {id:customer.id,name:customer.name,recency,frequency:customer.frequency.size,monetary:customer.monetary,R,F,M,segment};
+    }).sort((a,b) => b.monetary-a.monetary);
+  }
+
+  function renderTable(headers, rows) {
+    return `<div style="overflow:auto"><table class="view-table"><thead><tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join('')}</tr></thead><tbody>${rows || ''}</tbody></table></div>`;
+  }
+
+  function renderView(view, rows) {
+    const panel = byId('workspace-view');
+    panel.hidden = view === 'overview';
+    document.querySelectorAll('.overview-section').forEach((section) => { section.hidden = view !== 'overview'; });
+    byId('kpi-section').hidden = view !== 'overview';
+    const titles = {
+      overview:['Executive overview','A portfolio-level view of realized sales and operating signals.'],
+      revenue:['Revenue & growth','Monthly realized revenue, profit contribution and commercial trajectory.'],
+      customers:['Customer insights','RFM customer value and retention signals for targeted action.'],
+      products:['Product performance','Revenue, profit and unit contribution by product.'],
+      regions:['Regional analysis','Compare sales concentration and margin across operating markets.'],
+      quality:['Data quality','Completeness, duplicate keys and business-rule checks for the imported file.'],
+      exports:['Exports & reports','Download the filtered transaction extract or print a management-ready view.']
+    };
+    const [title, note] = titles[view] || titles.overview;
+    byId('crumb-current').textContent = title;
+    byId('page-eyebrow').textContent = `NEXUS · ${title}`;
+    byId('page-title').textContent = view === 'overview' ? 'Sales, with context.' : title;
+    byId('page-subtitle').textContent = note;
+    panel.innerHTML = '';
+    if (view === 'overview') return;
+    if (!state.rows.length) {
+      panel.innerHTML = `<div class="empty-state">Import <b>sales_cleaned.csv</b> from <code>data/processed</code> to activate the ${escapeHtml(title.toLowerCase())} workspace and live filters.</div>`;
+      return;
+    }
+    const eligible = rows.filter((row) => !['Cancelled','Returned'].includes(row.status));
+    const card = (heading, description, body) => `<div class="card view-card"><div class="view-heading">${heading}</div><div class="view-note">${description}</div>${body}</div>`;
+    if (view === 'revenue') {
+      const monthly = monthlyGroups(rows);
+      const total = monthly.reduce((sum, item) => sum + item.revenue, 0);
+      const profit = monthly.reduce((sum, item) => sum + item.profit, 0);
+      const table = renderTable(['Month','Revenue','Profit','Margin'], monthly.map((item) => `<tr><td>${item.month}</td><td class="numeric">${moneyFull(item.revenue)}</td><td class="numeric">${moneyFull(item.profit)}</td><td class="numeric">${ratio(item.revenue ? item.profit/item.revenue : 0)}</td></tr>`).join(''));
+      panel.innerHTML = card('Revenue trajectory', 'Monthly values exclude cancelled and returned orders.', `<div class="view-grid"><div class="view-metric"><span>NET REVENUE</span><strong>${money(total)}</strong></div><div class="view-metric"><span>GROSS PROFIT</span><strong>${money(profit)}</strong></div><div class="view-metric"><span>PROFIT MARGIN</span><strong>${ratio(total ? profit/total : 0)}</strong></div></div>${table}`);
+    } else if (view === 'customers') {
+      const customers = rfmRows(rows);
+      const bySegment = new Map();
+      customers.forEach((customer) => bySegment.set(customer.segment,(bySegment.get(customer.segment)||0)+1));
+      const bars = Array.from(bySegment.entries()).sort((a,b)=>b[1]-a[1]).map(([label,count])=>`<div class="bar-head"><span>${escapeHtml(label)}</span><span>${count.toLocaleString()}</span></div><div class="view-bar"><i style="width:${customers.length ? count/customers.length*100 : 0}%"></i></div>`).join('');
+      const table = renderTable(['Customer','Segment','Recency (days)','Orders','Lifetime revenue','RFM'],customers.slice(0,250).map((customer)=>`<tr><td>${escapeHtml(customer.name)}<br><span class="data-status">${escapeHtml(customer.id)}</span></td><td>${escapeHtml(customer.segment)}</td><td class="numeric">${customer.recency}</td><td class="numeric">${customer.frequency}</td><td class="numeric">${moneyFull(customer.monetary)}</td><td class="numeric">${customer.R}${customer.F}${customer.M}</td></tr>`).join(''));
+      panel.innerHTML = card('Customer segment distribution','Action-oriented RFM tiers calculated from the filtered sales.',bars)+card('Customer value register','Top 250 by realized lifetime revenue.',table);
+    } else if (view === 'products') {
+      const products = new Map();
+      eligible.forEach((row)=>{const entry=products.get(row.productName)||{category:row.category,revenue:0,profit:0,units:0};entry.revenue+=row.revenue;entry.profit+=row.profit;entry.units+=row.quantity;products.set(row.productName,entry);});
+      const sorted=Array.from(products.entries()).sort((a,b)=>b[1].revenue-a[1].revenue);
+      const table=renderTable(['Rank','Product','Category','Units','Revenue','Profit','Margin'],sorted.map(([name,value],index)=>`<tr><td>${index+1}</td><td>${escapeHtml(name)}</td><td>${escapeHtml(value.category)}</td><td class="numeric">${value.units.toLocaleString()}</td><td class="numeric">${moneyFull(value.revenue)}</td><td class="numeric">${moneyFull(value.profit)}</td><td class="numeric">${ratio(value.revenue?value.profit/value.revenue:0)}</td></tr>`).join(''));
+      panel.innerHTML=card('Product economics','Sorted by realized revenue; margins are calculated from transaction profit.',table);
+    } else if (view === 'regions') {
+      const regions=new Map();
+      eligible.forEach((row)=>{const entry=regions.get(row.region)||{revenue:0,profit:0,orders:new Set()};entry.revenue+=row.revenue;entry.profit+=row.profit;entry.orders.add(row.orderId);regions.set(row.region,entry);});
+      const sorted=Array.from(regions.entries()).sort((a,b)=>b[1].revenue-a[1].revenue);
+      const table=renderTable(['Region','Orders','Revenue','Profit','Margin','Revenue share'],sorted.map(([name,value])=>`<tr><td>${escapeHtml(name)}</td><td class="numeric">${value.orders.size.toLocaleString()}</td><td class="numeric">${moneyFull(value.revenue)}</td><td class="numeric">${moneyFull(value.profit)}</td><td class="numeric">${ratio(value.revenue?value.profit/value.revenue:0)}</td><td class="numeric">${ratio(revenueShare(value.revenue,sorted))}</td></tr>`).join(''));
+      panel.innerHTML=card('Regional contribution','Commercial outcomes across the selected operating footprint.',table);
+    } else if (view === 'quality') {
+      const missing=Object.entries(state.quality.missingByColumn).map(([header,count])=>({header,count})).filter((item)=>item.count);
+      const duplicateOrderCount=state.quality.duplicateOrderIds;
+      const invalidDates=state.quality.invalidDates;
+      const rejected=state.quality.sourceRows-rows.length;
+      const metrics=`<div class="view-grid"><div class="view-metric"><span>IMPORTED RECORDS</span><strong>${state.quality.sourceRows.toLocaleString()}</strong></div><div class="view-metric"><span>DUPLICATE ORDER IDS</span><strong>${duplicateOrderCount.toLocaleString()}</strong></div><div class="view-metric"><span>INVALID DATES</span><strong>${invalidDates.toLocaleString()}</strong></div></div>`;
+      const details=renderTable(['Check','Result'],[
+        `<tr><td>Rows excluded by date or filters</td><td class="numeric">${rejected.toLocaleString()}</td></tr>`,
+        `<tr><td>Malformed row widths</td><td class="numeric">${state.quality.malformedRows.toLocaleString()}</td></tr>`,
+        `<tr><td>Rows with missing values (column-level counts)</td><td class="numeric">${missing.reduce((sum,item)=>sum+item.count,0).toLocaleString()}</td></tr>`,
+        ...missing.map((item)=>`<tr><td>Missing · ${escapeHtml(item.header)}</td><td class="numeric">${item.count.toLocaleString()}</td></tr>`)
+      ].join(''));
+      panel.innerHTML=card('File-level data checks','These checks run in your browser on the imported CSV.',metrics+details);
+    } else if (view === 'exports') {
+      panel.innerHTML=card('Current filtered extract','Download data using the active period, region, category and status filters.',`<p><button class="export" id="download-csv" type="button">↓ &nbsp;Download filtered CSV</button> &nbsp; <button class="toolbar-button" id="print-report" type="button">Print / save PDF</button></p><p class="view-note">Use your browser’s print dialog and choose “Save as PDF” for a portable report.</p><div class="view-metric"><span>ROWS INCLUDED</span><strong>${rows.length.toLocaleString()}</strong></div>`);
+    }
+  }
+
+  function revenueShare(value, entries) {
+    const total=entries.reduce((sum,entry)=>sum+entry[1].revenue,0);
+    return total?value/total:0;
+  }
+
+  function downloadFilteredCSV(rows) {
+    if (!rows.length) return;
+    const csv=[state.headers.map(formatCSVCell).join(','),...rows.map((row)=>row.rawLine)].join('\r\n');
+    const link=document.createElement('a');
+    link.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+    link.download='nexus_filtered_sales.csv';
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
+  function refreshView() {
+    if (!state.rows.length) return;
+    const rows=currentRows();
+    updateOverview(rows);
+    renderView(state.view, rows);
+  }
+
+  async function importCSV(file) {
+    if (!file) return;
+    setStatus(`Loading ${file.name}…`,false);
+    try {
+      const source=await file.text();
+      const parsed=parseCSV(source);
+      const headerRow=parsed.next().value;
+      if (!headerRow) throw new Error('The selected CSV file is empty.');
+      const headers=headerRow.cells.map((header,index)=>index===0?header.replace(/^\uFEFF/,'').trim():header.trim());
+      const indexes=Object.fromEntries(headers.map((header,index)=>[header,index]));
+      const missing=requiredColumns.filter((column)=>!(column in indexes));
+      if(missing.length) throw new Error(`Missing required columns: ${missing.join(', ')}`);
+      const rows=[];
+      let skipped=0;
+      let sourceRows=0;
+      let malformedRows=0;
+      let duplicateOrderIds=0;
+      const seenOrderIds=new Set();
+      const missingByColumn=Object.fromEntries(headers.map((header)=>[header,0]));
+      for (const record of parsed) {
+        const raw=record.cells;
+        sourceRows+=1;
+        if(raw.length!==headers.length) malformedRows+=1;
+        headers.forEach((header,index)=>{if(!String(raw[index]??'').trim()) missingByColumn[header]+=1;});
+        const orderId=raw[indexes.Order_ID]||'';
+        if(orderId && seenOrderIds.has(orderId)) duplicateOrderIds+=1;
+        if(orderId) seenOrderIds.add(orderId);
+        const date=parseDate(raw[indexes.Order_Date]);
+        if(!date){skipped+=1;continue;}
+        rows.push({
+          rawLine:record.rawLine, date,
+          orderId,
+          customerId:raw[indexes.Customer_ID]||'Unknown',
+          customerName:raw[indexes.Customer_Name]||'Unknown',
+          productName:indexes.Product_Name===undefined?'Unknown product':raw[indexes.Product_Name]||'Unknown product',
+          category:raw[indexes.Category]||'Unknown',
+          region:raw[indexes.Region]||'Unknown',
+          status:raw[indexes.Order_Status]||'Unknown',
+          revenue:number(raw[indexes.Revenue]),
+          profit:number(raw[indexes.Profit]),
+          quantity:indexes.Quantity===undefined?1:number(raw[indexes.Quantity]),
+          shippingDays:indexes.Shipping_Days===undefined?0:number(raw[indexes.Shipping_Days])
+        });
+      }
+      if(!rows.length) throw new Error('No rows with valid order dates were found.');
+      state.headers=headers; state.rows=rows; state.fileName=file.name;
+      state.quality={sourceRows,duplicateOrderIds,invalidDates:skipped,malformedRows,missingByColumn};
+      updateFilters();
+      setStatus(`${file.name} · ${rows.length.toLocaleString()} valid rows${skipped?` · ${skipped} invalid dates skipped`:''}`,true);
+      refreshView();
+    } catch(error) {
+      setStatus(error.message || 'Could not load this CSV file.',false);
+    }
+  }
+
+  document.querySelectorAll('.nav-button').forEach((button)=>{
+    button.addEventListener('click',()=>{
+      state.view=button.dataset.view;
+      document.querySelectorAll('.nav-button').forEach((item)=>item.classList.toggle('active',item===button));
+      refreshView();
+    });
+  });
+  ['period','region-filter','category-filter','include-reversed'].forEach((id)=>byId(id).addEventListener('change',refreshView));
+  byId('csv-file').addEventListener('change',(event)=>importCSV(event.target.files[0]));
+  byId('theme').addEventListener('change',(event)=>document.body.dataset.theme=event.target.value);
+  byId('export-button').addEventListener('click',()=>window.print());
+  byId('workspace-view').addEventListener('click',(event)=>{
+    if(event.target.id==='download-csv') downloadFilteredCSV(currentRows());
+    if(event.target.id==='print-report') window.print();
+  });
+  document.querySelectorAll('.overview-section').forEach((section)=>{section.dataset.view='overview';});
+  renderView('overview',[]);
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+Total Revenue =
+CALCULATE (
+    SUM ( fact_sales[revenue] ),
+    NOT fact_sales[order_status] IN { "Cancelled", "Returned" }
+)
+
+Gross Profit =
+CALCULATE (
+    SUM ( fact_sales[profit] ),
+    NOT fact_sales[order_status] IN { "Cancelled", "Returned" }
+)
+
+Profit Margin =
+DIVIDE ( [Gross Profit], [Total Revenue] )
+
+Order Count =
+CALCULATE (
+    DISTINCTCOUNT ( fact_sales[order_id] ),
+    NOT fact_sales[order_status] IN { "Cancelled", "Returned" }
+)
+
+Average Order Value =
+DIVIDE ( [Total Revenue], [Order Count] )
+
+Units Sold =
+CALCULATE (
+    SUM ( fact_sales[quantity] ),
+    NOT fact_sales[order_status] IN { "Cancelled", "Returned" }
+)
+
+Revenue YTD =
+TOTALYTD ( [Total Revenue], dim_date[full_date] )
+
+Revenue YoY % =
+VAR PriorYearRevenue =
+    CALCULATE ( [Total Revenue], SAMEPERIODLASTYEAR ( dim_date[full_date] ) )
+RETURN
+    DIVIDE ( [Total Revenue] - PriorYearRevenue, PriorYearRevenue )
+
+Return Rate =
+DIVIDE (
+    CALCULATE ( COUNTROWS ( fact_sales ), fact_sales[order_status] = "Returned" ),
+    COUNTROWS ( fact_sales )
+)

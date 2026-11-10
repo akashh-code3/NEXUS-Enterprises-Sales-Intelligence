@@ -1,0 +1,6 @@
+Order_ID,Order_Date,Customer_ID,Customer_Name,Category,Region,Quantity,Revenue,Profit,Order_Status,Product_Name,Shipping_Days
+ORD-001,2025-01-03,C-001,Avery Morgan,Electronics,West,1,100,35,Delivered,Laptop Pro 14,3
+ORD-002,2025-02-03,C-001,Avery Morgan,Electronics,West,2,200,70,Delivered,Wireless Headphones,2
+ORD-003,2025-03-03,C-002,Jordan Patel,Apparel,South,1,80,30,Delivered,Performance Jacket,4
+ORD-004,2025-03-04,C-003,Riley Kim,Apparel,South,3,150,55,Delivered,Classic Denim,2
+ORD-005,2025-04-04,C-003,Riley Kim,Home & Living,Midwest,1,120,40,Returned,Ergonomic Chair,0
